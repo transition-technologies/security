@@ -1,0 +1,16 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+This is text for anyone.
+
+#{security.restrict roles:[['ADMIN']]}
+This is secured content for admin
+#{/security.restrict}
+
+#{security.roleHolderPresent}
+This is content for logged user
+#{/security.roleHolderPresent}
+
+#{security.restrictedResource resourceKeys:['document'], resourceParameters:[object: new model.Document(), access: [security.annotation.Access.AccessType.WRITE]]}
+Link to add document
+#{/security.restrictedResource}

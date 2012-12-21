@@ -1,0 +1,6 @@
+%{
+    boolean allowAccess = security.Security.getInstance().isRoleHolderPresent();
+}%
+#{if allowAccess}
+    #{doBody /}
+#{/if}

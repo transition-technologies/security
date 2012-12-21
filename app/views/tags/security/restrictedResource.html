@@ -1,0 +1,7 @@
+%{
+    boolean allowUnspecified = _allowUnspecified != null && _allowUnspecified;
+    boolean allowAccess = security.Security.getInstance().checkRestrictedResource(_resourceKeys, _resourceParameters, allowUnspecified)
+}%
+#{if allowAccess}
+    #{doBody /}
+#{/if}

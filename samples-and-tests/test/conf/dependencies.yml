@@ -1,0 +1,6 @@
+# Application dependencies
+
+require:
+    - play
+    - play -> mockito 0.1
+    - org.mockito -> mockito-all 1.9.5
