@@ -2,30 +2,36 @@ package security.handler;
 
 import java.util.Map;
 
+import security.annotation.Access;
+import security.annotation.Access.AccessType;
 import security.role.RoleHolder;
 
-import security.annotation.Access;
-
-
-
+/**
+ * The AccessHandler manages access to objects for given role holder.
+ * 
+ * @author Maciej Kujawski <M.Kujawski@tt.com.pl>
+ */
 public interface AccessHandler {
-    
+
     /**
      * Check access for objects based on object access map, where key is context object and value specifies access checks for
      * current user.
      * 
-     * <ul>
-     * <li>If {@link AccessResult#NOT_SPECIFIED} is returned and
-     * {@link controllers.deadbolt.RestrictedResource#staticFallback()} is false, access is denied.</li>
-     * <li>If {@link AccessResult#NOT_SPECIFIED} is returned and
-     * {@link controllers.deadbolt.RestrictedResource#staticFallback()} is true, any further RoleRequired or Restrictions
-     * annotations are processed. Note that if no RoleRequired or Restrictions annotations are present, access will be allowed.</li>
-     * </ul>
-     * @param roleHolder 
+     * @param roleHolder
      * 
      * @param objectAccessMap the object access map
      * @return the access result
      */
     AccessResult checkAccess(RoleHolder roleHolder, Map<Object, Access> objectAccessMap);
+
+    /**
+     * Checks roleHolder has access for context object.
+     * 
+     * @param roleHolder the role holder
+     * @param contextObject the context object
+     * @param accessTypes the access types
+     * @return the access result
+     */
+    AccessResult checkAccess(RoleHolder roleHolder, Object contextObject, AccessType[] accessTypes);
 
 }

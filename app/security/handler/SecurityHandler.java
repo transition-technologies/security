@@ -26,13 +26,6 @@ public interface SecurityHandler
      * @param controllerClassName the name of the controller access was denied to
      */
     void onAccessFailure(String controllerClassName);
-
-    /**
-     * Gets the handler used for dealing with resources restricted to specific users/groups.
-     *
-     * @return the handler for restricted resources.  May be null.
-     */
-    RestrictedResourcesHandler getRestrictedResourcesHandler();
     
     /**
      * Gets the access handler which performs access checks based on {@link Access}.

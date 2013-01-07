@@ -3,14 +3,14 @@
 
 This is text for anyone.
 
-#{security.restrict roles:[['ADMIN']]}
+#{security.roleRequired roles: ['ADMIN']}
 This is secured content for admin
-#{/security.restrict}
+#{/security.roleRequired}
 
-#{security.roleHolderPresent}
+#{security.anyRole}
 This is content for logged user
-#{/security.roleHolderPresent}
+#{/security.anyRole}
 
-#{security.restrictedResource resourceKeys:['document'], resourceParameters:[object: new model.Document(), access: [security.annotation.Access.AccessType.WRITE]]}
+#{security.access contextObject: new model.Document(), accessTypes: [security.annotation.Access.AccessType.WRITE]}
 Link to add document
-#{/security.restrictedResource}
+#{/security.access}

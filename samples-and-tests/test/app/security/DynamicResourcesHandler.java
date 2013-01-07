@@ -7,7 +7,6 @@ import security.annotation.Access;
 import security.annotation.Access.AccessType;
 import security.handler.AccessHandler;
 import security.handler.AccessResult;
-import security.handler.RestrictedResourcesHandler;
 import security.role.Role;
 import security.role.RoleHolder;
 
@@ -17,24 +16,18 @@ import security.role.RoleHolder;
  * Check access to given resource. Access for UPDATE, DELETE, ALL is only for ADMIN role.
  * User in USER role has only access for READ
  */
-public class DynamicResourcesHandler implements RestrictedResourcesHandler, AccessHandler {
+public class DynamicResourcesHandler implements AccessHandler {
 
-    @SuppressWarnings("unchecked")
-    public AccessResult checkAccess(RoleHolder roleHolder, List<String> resourceNames, Map<String, Object> resourceParameters) {
+    public AccessResult checkAccess(RoleHolder roleHolder, Object contextObject, AccessType[] accessTypes) {
         AccessResult result = AccessResult.DENIED;
 
-        if (roleHolder != null) {
-            Object object = resourceParameters.get("object");
-            if (object instanceof AclManaged && resourceParameters.get("access") instanceof List) {
-                List<AccessType> accesses = (List<AccessType>) resourceParameters.get("access");
-
-                result = aclSecurityCheck(roleHolder, accesses.toArray(new AccessType[accesses.size()]));
-            }
+        if (roleHolder != null && contextObject instanceof AclManaged) {
+            result = aclSecurityCheck(roleHolder, accessTypes);
         }
 
         return result;
     }
-
+    
     public AccessResult checkAccess(RoleHolder roleHolder, Map<Object, Access> objectAccessMap) {
         AccessResult result = AccessResult.ALLOWED;
 

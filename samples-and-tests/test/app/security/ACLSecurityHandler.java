@@ -2,7 +2,6 @@ package security;
 
 import exception.SecurityException;
 import security.handler.AccessHandler;
-import security.handler.RestrictedResourcesHandler;
 import security.handler.SecurityHandler;
 import security.role.RoleHolder;
 
@@ -22,10 +21,6 @@ public class ACLSecurityHandler implements SecurityHandler {
     public void onAccessFailure(String paramString) {
         System.out.println("FAIL: " + paramString);
         throw new SecurityException(paramString);
-    }
-
-    public RestrictedResourcesHandler getRestrictedResourcesHandler() {
-        return dynamicResourcesHandler;
     }
 
     public AccessHandler getAccessHandler() {

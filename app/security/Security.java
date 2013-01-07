@@ -6,14 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import play.Logger;
+import org.hibernate.criterion.Restrictions;
+
 import play.Play;
 import play.exceptions.ConfigurationException;
 import play.mvc.Http.Request;
 import security.annotation.*;
+import security.annotation.Access.AccessType;
 import security.handler.AccessHandler;
 import security.handler.AccessResult;
-import security.handler.RestrictedResourcesHandler;
 import security.handler.SecurityHandler;
 import security.role.Role;
 import security.role.RoleHolder;
@@ -137,24 +138,15 @@ public class Security {
         return getRoleHolder() != null;
     }
     
-    public boolean checkRestrictedResource(List<String> resourceKeys, Map<String, Object> resourceParameters,
-        Boolean allowUnspecified) {
-        boolean accessedAllowed = false;
+    public boolean hasAccessForResource(Object contextObject, List<AccessType> accessTypes) {
         securityHandler.beforeRoleCheck();
         RoleHolder roleHolder = getRoleHolder();
 
-        RestrictedResourcesHandler restrictedResourcesHandler = securityHandler.getRestrictedResourcesHandler();
+        AccessHandler accessHandler = securityHandler.getAccessHandler();
 
-        AccessResult accessResult = restrictedResourcesHandler.checkAccess(roleHolder, resourceKeys, resourceParameters);
-        switch (accessResult) {
-            case ALLOWED:
-                accessedAllowed = true;
-                break;
-            default:
-                Logger.debug("RestrictedResource - access denied for [%s]", resourceKeys);
-        }
+        AccessResult accessResult = accessHandler.checkAccess(roleHolder, contextObject, accessTypes.toArray(new AccessType[accessTypes.size()]));
 
-        return accessedAllowed;
+        return accessResult == AccessResult.ALLOWED;
     }
 
     /**

@@ -1,0 +1,7 @@
+%{
+
+    boolean allowAccess = security.Security.getInstance().hasRoles(_roles)
+}%
+#{if allowAccess}
+    #{doBody /}
+#{/if}
