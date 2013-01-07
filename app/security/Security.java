@@ -28,11 +28,11 @@ import security.role.RoleHolder;
  */
 public class Security {
     
-    public static final String DEADBOLT_HANDLER_KEY = "deadbolt.handler";
+    public static final String SECURITY_HANDLER_KEY = "security.handler";
 
-    public static final String CACHE_USER_KEY = "deadbolt.cache-user-per-request";
+    public static final String CACHE_USER_KEY = "security.cache-user-per-request";
 
-    public static final String CACHE_PER_REQUEST = "deadbolt.cache-user";
+    public static final String CACHE_PER_REQUEST = "security.cache-user";
 
     private static Security security;
     
@@ -41,16 +41,16 @@ public class Security {
     
     @SuppressWarnings("unchecked")
     private Security() {
-        String handlerName = Play.configuration.getProperty(DEADBOLT_HANDLER_KEY);
+        String handlerName = Play.configuration.getProperty(SECURITY_HANDLER_KEY);
         if (handlerName == null) {
-            throw new ConfigurationException("deadbolt.handler must be defined");
+            throw new ConfigurationException("security.handler must be defined");
         }
 
         try {
             Class<SecurityHandler> clazz = (Class<SecurityHandler>) Class.forName(handlerName);
             securityHandler = clazz.newInstance();
         } catch (Exception e) {
-            throw new ConfigurationException(String.format("Unable to create DeadboltHandler instance: [%s]", e.getMessage()));
+            throw new ConfigurationException(String.format("Unable to create SecurityHandler instance: [%s]", e.getMessage()));
         }
 
     }

@@ -23,10 +23,10 @@ public class SecurityTest extends UnitTest {
     
     @Before
     public void setUpMocks() {
-        SecurityHandler deadboltHandler = new ACLSecurityHandler();
+        SecurityHandler securityHandler = new ACLSecurityHandler();
         
         security = Security.getInstance();
-        security.securityHandler = deadboltHandler;
+        security.securityHandler = securityHandler;
     }
     
     @Test(expected=SecurityException.class)
@@ -36,66 +36,66 @@ public class SecurityTest extends UnitTest {
 
     @Test(expected=SecurityException.class)
     public void testUserIsNotInRoleFromRestrictRole() throws java.lang.SecurityException, NoSuchMethodException {
-        SecurityHandler deadboltHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER);
-        security.securityHandler = deadboltHandler;
+        SecurityHandler securityHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER);
+        security.securityHandler = securityHandler;
         
         security.executeSecurityChecks(Service.class, "accessForAdminOnly", new Class<?>[] {});
     }
     
     @Test(expected=SecurityException.class)
     public void testUserIsNotInRoleFromMasterRestrictRole() throws java.lang.SecurityException, NoSuchMethodException {
-        SecurityHandler deadboltHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER);
-        security.securityHandler = deadboltHandler;
+        SecurityHandler securityHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER);
+        security.securityHandler = securityHandler;
         
         security.executeSecurityChecks(RestrictedService.class, "changeEverything", new Class<?>[] {});
     }
     
     @Test
     public void testUserIsInAllRolesFromRestrictRole() throws java.lang.SecurityException, NoSuchMethodException {
-        SecurityHandler deadboltHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER, UserRole.ADMIN);
-        security.securityHandler = deadboltHandler;
+        SecurityHandler securityHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER, UserRole.ADMIN);
+        security.securityHandler = securityHandler;
         
         security.executeSecurityChecks(Service.class, "accessForAdminOrUser", new Class<?>[] {});
         
-        Mockito.verify(deadboltHandler, Mockito.times(0)).onAccessFailure(Mockito.anyString());
+        Mockito.verify(securityHandler, Mockito.times(0)).onAccessFailure(Mockito.anyString());
     }
     
     @Test
     public void testUserIsInOneOfRoleFromRestrictRoles() throws java.lang.SecurityException, NoSuchMethodException {
-        SecurityHandler deadboltHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER);
-        security.securityHandler = deadboltHandler;
+        SecurityHandler securityHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER);
+        security.securityHandler = securityHandler;
         
         security.executeSecurityChecks(Service.class, "accessForAdminOrUser", new Class<?>[] {});
         
-        Mockito.verify(deadboltHandler, Mockito.times(0)).onAccessFailure(Mockito.anyString());
+        Mockito.verify(securityHandler, Mockito.times(0)).onAccessFailure(Mockito.anyString());
     }
     
     @Test
     public void testUserIsInRoleFromRestrictRole() throws java.lang.SecurityException, NoSuchMethodException {
-        SecurityHandler spyDeadboltHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER);
-        security.securityHandler = spyDeadboltHandler;
+        SecurityHandler spySecurityHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER);
+        security.securityHandler = spySecurityHandler;
   
         security.executeSecurityChecks(Service.class, "accessForUserOnly", new Class<?>[] {});
         
-        Mockito.verify(spyDeadboltHandler, Mockito.times(0)).onAccessFailure(Mockito.anyString());
+        Mockito.verify(spySecurityHandler, Mockito.times(0)).onAccessFailure(Mockito.anyString());
     }
 
     /**
-     * Mock get role holder on deadbolt handler.
+     * Mock get role holder on security handler.
      *
-     * @param deadboltHandler the deadbolt handler
+     * @param securityHandler the security handler
      * @param roles the roles
-     * @return the deadbolt handler
+     * @return the security handler
      */
-    private SecurityHandler mockGetRoleHolder(SecurityHandler deadboltHandler, UserRole... roles) {
-        SecurityHandler spyDeadboltHandler = Mockito.spy(deadboltHandler);
+    private SecurityHandler mockGetRoleHolder(SecurityHandler securityHandler, UserRole... roles) {
+        SecurityHandler spySecurityHandler = Mockito.spy(securityHandler);
         User user = new User();
         for (UserRole role : roles) {
             user.getRoles().add(role);
         }
         
-        Mockito.when(spyDeadboltHandler.getRoleHolder()).thenReturn(user);
-        return spyDeadboltHandler;
+        Mockito.when(spySecurityHandler.getRoleHolder()).thenReturn(user);
+        return spySecurityHandler;
     }
     
     @Test
