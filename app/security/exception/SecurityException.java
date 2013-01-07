@@ -1,4 +1,4 @@
-package exception;
+package security.exception;
 
 
 public class SecurityException extends RuntimeException {

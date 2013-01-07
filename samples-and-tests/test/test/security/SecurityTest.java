@@ -5,14 +5,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import security.handler.SecurityHandler;
-
-import security.handler.AccessHandler;
-
-import exception.SecurityException;
 import model.User;
 import model.UserRole;
 import play.test.UnitTest;
+import security.exception.SecurityException;
+import security.handler.AccessHandler;
+import security.handler.SecurityHandler;
 import services.ACLService;
 import services.RestrictedService;
 import services.Service;
@@ -100,20 +98,20 @@ public class SecurityTest extends UnitTest {
     
     @Test
     public void testUnrestrictedDoesNotRequireUser() throws java.lang.SecurityException, NoSuchMethodException {
-        SecurityHandler deadboltHandler = Mockito.spy(security.securityHandler);
-        security.securityHandler = deadboltHandler;
+        SecurityHandler securityHandler = Mockito.spy(security.securityHandler);
+        security.securityHandler = securityHandler;
         
         security.executeSecurityChecks(RestrictedService.class, "doSimpleChange", new Class<?>[] {});
         
-        Mockito.verify(deadboltHandler, Mockito.times(0)).onAccessFailure(Mockito.anyString());
+        Mockito.verify(securityHandler, Mockito.times(0)).onAccessFailure(Mockito.anyString());
     }
     
     @Test(expected = SecurityException.class)
     public void testUserHasNoAccessToObjectsManagedByAdmin() throws java.lang.SecurityException, NoSuchMethodException {
-        SecurityHandler deadboltHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER);
+        SecurityHandler securityHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER);
         AccessHandler accessHandler = new DynamicResourcesHandler();
-        Mockito.when(deadboltHandler.getAccessHandler()).thenReturn(accessHandler);
-        security.securityHandler = deadboltHandler;
+        Mockito.when(securityHandler.getAccessHandler()).thenReturn(accessHandler);
+        security.securityHandler = securityHandler;
 
         security.executeSecurityChecks(ACLService.class, "save", new Class<?>[] {User.class}, new User());
     }

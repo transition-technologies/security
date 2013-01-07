@@ -1,6 +1,6 @@
 package security;
 
-import exception.SecurityException;
+import security.exception.SecurityException;
 import security.handler.AccessHandler;
 import security.handler.SecurityHandler;
 import security.role.RoleHolder;

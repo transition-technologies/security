@@ -1,10 +1,8 @@
 package security.controller;
 
-import exception.SecurityException;
-
 import play.mvc.Catch;
-
 import play.mvc.Controller;
+import security.exception.SecurityException;
 
 /**
  * Catches all exceptions {@link SecurityException} and send forbidden response with localized message of exception

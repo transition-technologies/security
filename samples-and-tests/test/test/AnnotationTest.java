@@ -2,12 +2,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import exception.SecurityException;
 import model.User;
 import model.UserRole;
 import play.mvc.Http.Request;
 import play.test.UnitTest;
 import security.Security;
+import security.exception.SecurityException;
 import services.ACLService;
 import services.RestrictedService;
 import services.Service;
