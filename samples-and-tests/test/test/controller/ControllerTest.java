@@ -53,6 +53,16 @@ public class ControllerTest extends FunctionalTest {
     }
     
     @Test
+    public void testSharedContentIsVisibleByUser() {
+        Request request = newRequest();
+        request.args.put(Security.CACHE_PER_REQUEST, mockGetRoleHolder(UserRole.USER));
+        Response response = GET(request, "/showMixedContent");
+
+        assertTrue("User cannot watch shared content", response.out.toString().contains(
+            "This is shared content for admin and user"));
+    }
+    
+    @Test
     public void testUserContentIsVisibleByUser() {
         Request request = newRequest();
         request.args.put(Security.CACHE_PER_REQUEST, mockGetRoleHolder(UserRole.USER));

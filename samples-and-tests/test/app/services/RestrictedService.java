@@ -8,7 +8,6 @@ public class RestrictedService {
 
     
     public void changeEverything() {
-        System.out.println("Changing everything");
     }
     
     @Unsecured

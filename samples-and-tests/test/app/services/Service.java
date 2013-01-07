@@ -14,17 +14,14 @@ public class Service {
     
     @RoleRequired({"ADMIN"})
     public void accessForAdminOnly() {
-        System.out.println("Access for admin only");
     }
     
     @RoleRequired({"ADMIN", "USER"})
-    public void accessForAdminAndUser() {
-        System.out.println("Access for admin and user");
+    public void accessForAdminOrUser() {
     }
 
     @RoleRequired({"USER"})
     public void accessForUserOnly() {
-        System.out.println("Access for user only");
     }
 }
 

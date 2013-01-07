@@ -108,21 +108,22 @@ public class Security {
     }
     
     /**
-     * Checks that current user has all passed roles.
+     * Checks that current user has at least one of passed roles.
      *
      * @param roles the roles names
      * @return true, if user has all roles with given names
      */
-    public boolean hasRoles(List<String> roles) {
-        boolean hasAccess = false;
+    public boolean hasRole(List<String> roles) {
         RoleHolder roleHolder = getRoleHolder();
-        
-        if (roleHolder != null) {
-            for (String roleName : roles) {
-                hasAccess = containsRoleWithName(roleHolder.getRoles(), roleName);
-                if (!hasAccess) {
-                    break;
-                }
+        if (roleHolder == null) {
+            return false;
+        }
+
+        boolean hasAccess = false;
+        for (String roleName : roles) {
+            hasAccess = containsRoleWithName(roleHolder.getRoles(), roleName);
+            if (hasAccess) {
+                break;
             }
         }
 
@@ -139,7 +140,6 @@ public class Security {
     }
     
     public boolean hasAccessForResource(Object contextObject, List<AccessType> accessTypes) {
-        securityHandler.beforeRoleCheck();
         RoleHolder roleHolder = getRoleHolder();
 
         AccessHandler accessHandler = securityHandler.getAccessHandler();
@@ -157,15 +157,15 @@ public class Security {
     private void executeRoleRequiredCheck(RoleHolder roleHolder, Method method) {
         RoleRequired roleRequired = getAnnotationFromMethodOrClass(method, RoleRequired.class);
 
-        if (roleRequired != null) {
+        if (roleRequired != null && roleRequired.value().length > 0) {
             
             if (roleHolder == null) {
                 securityHandler.onAccessFailure("");
             } else {
-                boolean hasAccess = true;
+                boolean hasAccess = false;
                 for (String requiredRoleName : roleRequired.value()) {
-                    if (!containsRoleWithName(roleHolder.getRoles(), requiredRoleName)) {
-                        hasAccess = false;
+                    if (containsRoleWithName(roleHolder.getRoles(), requiredRoleName)) {
+                        hasAccess = true;
                         break;
                     }
                 }

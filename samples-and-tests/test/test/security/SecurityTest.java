@@ -55,7 +55,17 @@ public class SecurityTest extends UnitTest {
         SecurityHandler deadboltHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER, UserRole.ADMIN);
         security.securityHandler = deadboltHandler;
         
-        security.executeSecurityChecks(Service.class, "accessForAdminAndUser", new Class<?>[] {});
+        security.executeSecurityChecks(Service.class, "accessForAdminOrUser", new Class<?>[] {});
+        
+        Mockito.verify(deadboltHandler, Mockito.times(0)).onAccessFailure(Mockito.anyString());
+    }
+    
+    @Test
+    public void testUserIsInOneOfRoleFromRestrictRoles() throws java.lang.SecurityException, NoSuchMethodException {
+        SecurityHandler deadboltHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER);
+        security.securityHandler = deadboltHandler;
+        
+        security.executeSecurityChecks(Service.class, "accessForAdminOrUser", new Class<?>[] {});
         
         Mockito.verify(deadboltHandler, Mockito.times(0)).onAccessFailure(Mockito.anyString());
     }

@@ -52,19 +52,19 @@ public class AnnotationTest extends UnitTest {
     }
 
     @Test(expected=SecurityException.class)
-    public void testUserNotInRoleFromRestrictRoleHasnotAccessToSecuredMethod() {
+    public void testUserNotInRoleFromRestrictRoleHasNoAccessToSecuredMethod() {
         User user = mockGetRoleHolder(UserRole.USER);
         Request.current().args.put(Security.CACHE_PER_REQUEST, user);
 
         service.accessForAdminOnly();
     }
     
-    @Test(expected=SecurityException.class)
+    @Test
     public void testUserHasAllRolesFromRestrictRoleToAccessSecuredMethod() throws java.lang.SecurityException, NoSuchMethodException {
         User user = mockGetRoleHolder(UserRole.ADMIN);
         Request.current().args.put(Security.CACHE_PER_REQUEST, user);
         
-        service.accessForAdminAndUser();
+        service.accessForAdminOrUser();
     }
     
     @Test

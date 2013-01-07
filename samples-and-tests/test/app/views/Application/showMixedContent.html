@@ -14,3 +14,7 @@ This is content for logged user
 #{security.access contextObject: new model.Document(), accessTypes: [security.annotation.Access.AccessType.WRITE]}
 Link to add document
 #{/security.access}
+
+#{security.roleRequired roles: ['ADMIN', 'USER']}
+This is shared content for admin and user
+#{/security.roleRequired}
