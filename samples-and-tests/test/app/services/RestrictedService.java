@@ -13,7 +13,6 @@ public class RestrictedService {
     
     @Unsecured
     public void doSimpleChange() {
-        System.out.println("Do simple change");
     }
     
 }

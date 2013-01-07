@@ -14,12 +14,10 @@ public class ACLSecurityHandler implements SecurityHandler {
     }
 
     public RoleHolder getRoleHolder() {
-        System.out.println("SecurityHandler: get role holder");
         return null;
     }
 
     public void onAccessFailure(String paramString) {
-        System.out.println("FAIL: " + paramString);
         throw new SecurityException(paramString);
     }
 

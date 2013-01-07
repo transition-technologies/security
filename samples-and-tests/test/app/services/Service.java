@@ -7,11 +7,9 @@ public class Service {
 
     @AnyRole
     public void securedMethod() {
-        System.out.println("Secure ddd");
     }
 
     public void nonSecuredMethod() {
-        System.out.println("Non Secured");
     }
     
     @RoleRequired({"ADMIN"})
