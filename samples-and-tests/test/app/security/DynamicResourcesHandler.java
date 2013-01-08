@@ -18,30 +18,29 @@ import security.role.RoleHolder;
  */
 public class DynamicResourcesHandler implements AccessHandler {
 
-    public AccessResult checkAccess(RoleHolder roleHolder, Object contextObject, AccessType[] accessTypes) {
+    public AccessResult checkAccess(RoleHolder roleHolder, AclManaged contextObject, AccessType[] accessTypes) {
         AccessResult result = AccessResult.DENIED;
 
-        if (roleHolder != null && contextObject instanceof AclManaged) {
+        if (roleHolder != null) {
             result = aclSecurityCheck(roleHolder, accessTypes);
         }
 
         return result;
     }
     
-    public AccessResult checkAccess(RoleHolder roleHolder, Map<Object, Access> objectAccessMap) {
+    public AccessResult checkAccess(RoleHolder roleHolder, Map<AclManaged, Access> objectAccessMap) {
         AccessResult result = AccessResult.ALLOWED;
 
-        for (Object object : objectAccessMap.keySet()) {
+        for (AclManaged object : objectAccessMap.keySet()) {
             Access access = objectAccessMap.get(object);
 
             AccessType[] accessTypes = access.value();
 
-            if (!access.type().equals(AclManaged.class) || object instanceof AclManaged) {
-                result = aclSecurityCheck(roleHolder, accessTypes);
-                if (result == AccessResult.DENIED) {
-                    break;
-                }
+            result = aclSecurityCheck(roleHolder, accessTypes);
+            if (result == AccessResult.DENIED) {
+                break;
             }
+
         }
 
         return result;

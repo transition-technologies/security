@@ -139,12 +139,20 @@ public class Security {
         return getRoleHolder() != null;
     }
     
-    public boolean hasAccessForResource(Object contextObject, List<AccessType> accessTypes) {
+    /**
+     * Checks current user has access for given context object.
+     *
+     * @param contextObject the context object
+     * @param accessTypes the access types
+     * @return true, if successful
+     */
+    public boolean hasAccess(AclManaged contextObject, List<AccessType> accessTypes) {
         RoleHolder roleHolder = getRoleHolder();
 
         AccessHandler accessHandler = securityHandler.getAccessHandler();
 
-        AccessResult accessResult = accessHandler.checkAccess(roleHolder, contextObject, accessTypes.toArray(new AccessType[accessTypes.size()]));
+        AccessResult accessResult = accessHandler.checkAccess(roleHolder, contextObject, accessTypes
+            .toArray(new AccessType[accessTypes.size()]));
 
         return accessResult == AccessResult.ALLOWED;
     }
@@ -199,7 +207,7 @@ public class Security {
      * @param args the args
      */
     private void executeAccessCheck(RoleHolder roleHolder, Method method, Object... args) {
-        Map<Object, Access> accessMap = getObjectAccessMap(Access.class, method, args);
+        Map<AclManaged, Access> accessMap = getObjectAccessMap(Access.class, method, args);
 
         if (!accessMap.isEmpty()) {
             AccessResult accessResult = securityHandler.getAccessHandler().checkAccess(roleHolder, accessMap);
@@ -219,15 +227,17 @@ public class Security {
      * @param args the parameter object of method
      * @return the object access map
      */
-    private <T extends Annotation> Map<Object, T> getObjectAccessMap(Class<T> annotationClass, Method method, Object... args) {
-        Map<Object, T> accessMap = new HashMap<Object, T>();
+    private <T extends Annotation> Map<AclManaged, T> getObjectAccessMap(Class<T> annotationClass, Method method, Object... args) {
+        Map<AclManaged, T> accessMap = new HashMap<AclManaged, T>();
 
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
 
         for (int i = 0; i < parameterAnnotations.length; i++) {
-            for (int j = 0; j < parameterAnnotations[i].length; j++) {
-                if (annotationClass.isInstance(parameterAnnotations[i][j])) {
-                    accessMap.put(args[i], annotationClass.cast(parameterAnnotations[i][j]));
+            if (args[i] instanceof AclManaged) {
+                for (int j = 0; j < parameterAnnotations[i].length; j++) {
+                    if (annotationClass.isInstance(parameterAnnotations[i][j])) {
+                        accessMap.put((AclManaged) args[i], annotationClass.cast(parameterAnnotations[i][j]));
+                    }
                 }
             }
         }

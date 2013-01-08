@@ -1,5 +1,5 @@
 %{
-    boolean allowAccess = security.Security.getInstance().hasAccessForResource(_contextObject, _accessTypes)
+    boolean allowAccess = security.Security.getInstance().hasAccess(_contextObject, _accessTypes)
 }%
 #{if allowAccess}
     #{doBody /}
