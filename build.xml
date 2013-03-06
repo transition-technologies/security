@@ -51,10 +51,10 @@
             <javac source="1.5" target="1.5"/>
         </groovyc>
 
-        <jar destfile="lib/validate.jar" basedir="tmp/classes">
+        <jar destfile="lib/security.jar" basedir="tmp/classes">
             <manifest>
                 <section name="Play">
-                    <attribute name="Specification-Title" value="Groovy"/>
+                    <attribute name="Specification-Title" value="Security"/>
                 </section>
             </manifest>
         </jar>
