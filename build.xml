@@ -23,7 +23,7 @@
     </path>
 
     <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc"
-             classpathref="project.classpath"/>
+             classpathref="play.classpath"/>
 
 
     <target name="build" depends="check">
