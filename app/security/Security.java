@@ -138,7 +138,24 @@ public class Security {
     public boolean isRoleHolderPresent() {
         return getRoleHolder() != null;
     }
-    
+
+    /**
+     * Checks current user has access for given context object.
+     *
+     * @param contextObject the context object
+     * @param accessTypes   the access types
+     * @return true, if successful
+     */
+    public boolean hasAccess(AclManaged contextObject, AccessType... accessTypes) {
+        RoleHolder roleHolder = getRoleHolder();
+
+        AccessHandler accessHandler = securityHandler.getAccessHandler();
+
+        AccessResult accessResult = accessHandler.checkAccess(roleHolder, contextObject, accessTypes);
+
+        return accessResult == AccessResult.ALLOWED;
+    }
+
     /**
      * Checks current user has access for given context object.
      *
@@ -147,14 +164,50 @@ public class Security {
      * @return true, if successful
      */
     public boolean hasAccess(AclManaged contextObject, List<AccessType> accessTypes) {
-        RoleHolder roleHolder = getRoleHolder();
+       return hasAccess(contextObject, accessTypes.toArray(new AccessType[accessTypes.size()]));
+    }
 
-        AccessHandler accessHandler = securityHandler.getAccessHandler();
+    /**
+     * Convert String to AccessType array that can be used to test access
+     * @param value
+     * @return
+     */
+    public AccessType toAccess(CharSequence value) {
+        AccessType access = AccessType.valueOf(value.toString().toUpperCase());
+        return access;
+    }
 
-        AccessResult accessResult = accessHandler.checkAccess(roleHolder, contextObject, accessTypes
-            .toArray(new AccessType[accessTypes.size()]));
+    /**
+     * Just to make api consistent
+     *
+     * @param value
+     * @return
+     */
+    public AccessType toAccess(AccessType value) {
+        return value;
+    }
 
-        return accessResult == AccessResult.ALLOWED;
+    /**
+     * Convert List<String or AccessType> to AccessType array that can be used to test access
+     *
+     * @param values
+     * @return
+     */
+    public AccessType[] toAccess(List values) {
+        AccessType[] access = new AccessType[values.size()];
+        int i = 0;
+        for(Object value : values) {
+            if(value instanceof CharSequence) {
+                access[i] = toAccess((CharSequence)value);
+            } else if(value instanceof AccessType) {
+                access[i] = (AccessType)value;
+            } else {
+                throw new IllegalArgumentException("Access can only be expressed using String or " +
+                        "AccessType objects. Cannot cast " + value + " to either.");
+            }
+            i++;
+        }
+        return access;
     }
 
     /**

@@ -9,7 +9,7 @@ import security.exception.SecurityException;
  */
 public class SecurityController extends Controller {
     
-    @Catch(value = SecurityException.class)
+    @Catch(SecurityException.class)
     public static void catchSecurityException(SecurityException securityException) {
         forbidden(securityException.getLocalizedMessage());
     }
