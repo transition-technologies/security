@@ -146,7 +146,7 @@ public class Security {
      * @param accessTypes   the access types
      * @return true, if successful
      */
-    public boolean hasAccess(AclManaged contextObject, AccessType... accessTypes) {
+    public boolean hasAccess(AclManaged contextObject, AccessType[] accessTypes) {
         RoleHolder roleHolder = getRoleHolder();
 
         AccessHandler accessHandler = securityHandler.getAccessHandler();
@@ -160,11 +160,22 @@ public class Security {
      * Checks current user has access for given context object.
      *
      * @param contextObject the context object
-     * @param accessTypes the access types
+     * @param accessTypes   the access types
      * @return true, if successful
      */
     public boolean hasAccess(AclManaged contextObject, List<AccessType> accessTypes) {
-       return hasAccess(contextObject, accessTypes.toArray(new AccessType[accessTypes.size()]));
+        return hasAccess(contextObject, accessTypes.toArray(new AccessType[accessTypes.size()]));
+    }
+
+    /**
+     * Checks current user has access for given context object.
+     *
+     * @param contextObject the context object
+     * @param accessType    the access type
+     * @return true, if successful
+     */
+    public boolean hasAccess(AclManaged contextObject, AccessType accessType) {
+        return hasAccess(contextObject, new AccessType[]{accessType});
     }
 
     /**
