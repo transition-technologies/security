@@ -5,6 +5,8 @@ import security.handler.AccessHandler;
 import security.handler.SecurityHandler;
 import security.role.RoleHolder;
 
+import java.lang.reflect.Method;
+
 
 public class ACLSecurityHandler implements SecurityHandler {
 
@@ -17,8 +19,8 @@ public class ACLSecurityHandler implements SecurityHandler {
         return null;
     }
 
-    public void onAccessFailure(String paramString) {
-        throw new SecurityException(paramString);
+    public void onAccessFailure(Method method, AclManaged... forbiddenObject) {
+        throw new SecurityException(method.getName());
     }
 
     public AccessHandler getAccessHandler() {

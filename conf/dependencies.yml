@@ -1,4 +1,4 @@
-self: pl.com.tt.play.modules -> security 1.2.0
+self: pl.com.tt.play.modules -> security 1.2.1
 
 require:
  - play

@@ -52,7 +52,6 @@ public class Security {
         } catch (Exception e) {
             throw new ConfigurationException(String.format("Unable to create SecurityHandler instance: [%s]", e.getMessage()));
         }
-
     }
     
     public static Security getInstance() {
@@ -232,7 +231,7 @@ public class Security {
         if (roleRequired != null && roleRequired.value().length > 0) {
             
             if (roleHolder == null) {
-                securityHandler.onAccessFailure("");
+                securityHandler.onAccessFailure(method);
             } else {
                 boolean hasAccess = false;
                 for (String requiredRoleName : roleRequired.value()) {
@@ -243,7 +242,7 @@ public class Security {
                 }
 
                 if (!hasAccess) {
-                    securityHandler.onAccessFailure(method.toGenericString());
+                    securityHandler.onAccessFailure(method);
                 }
             }
         }
@@ -285,7 +284,8 @@ public class Security {
                                 (AclManaged) contextObject, access.value());
 
                         if (accessResult == AccessResult.DENIED) {
-                            securityHandler.onAccessFailure("");
+                            securityHandler.onAccessFailure(method, (AclManaged)contextObject);
+														return;
                         }
                     }
                 }
@@ -330,7 +330,7 @@ public class Security {
         AnyRole anyRole = getAnnotationFromMethodOrClass(method, AnyRole.class);
 
         if (anyRole != null && roleHolder == null) {
-            securityHandler.onAccessFailure("");
+            securityHandler.onAccessFailure(method);
         }
     }
 

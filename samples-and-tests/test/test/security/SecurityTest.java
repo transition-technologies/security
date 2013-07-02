@@ -53,28 +53,28 @@ public class SecurityTest extends UnitTest {
         security.securityHandler = securityHandler;
         
         security.executeSecurityChecks(Service.class, "accessForAdminOrUser", new Class<?>[] {});
-        
-        Mockito.verify(securityHandler, Mockito.times(0)).onAccessFailure(Mockito.anyString());
+
+        Mockito.verify(securityHandler, Mockito.times(0)).onAccessFailure(null);
     }
-    
+
     @Test
     public void testUserIsInOneOfRoleFromRestrictRoles() throws java.lang.SecurityException, NoSuchMethodException {
         SecurityHandler securityHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER);
         security.securityHandler = securityHandler;
-        
+
         security.executeSecurityChecks(Service.class, "accessForAdminOrUser", new Class<?>[] {});
-        
-        Mockito.verify(securityHandler, Mockito.times(0)).onAccessFailure(Mockito.anyString());
+
+        Mockito.verify(securityHandler, Mockito.times(0)).onAccessFailure(null);
     }
-    
+
     @Test
     public void testUserIsInRoleFromRestrictRole() throws java.lang.SecurityException, NoSuchMethodException {
         SecurityHandler spySecurityHandler = mockGetRoleHolder(security.securityHandler, UserRole.USER);
         security.securityHandler = spySecurityHandler;
-  
+
         security.executeSecurityChecks(Service.class, "accessForUserOnly", new Class<?>[] {});
-        
-        Mockito.verify(spySecurityHandler, Mockito.times(0)).onAccessFailure(Mockito.anyString());
+
+        Mockito.verify(spySecurityHandler, Mockito.times(0)).onAccessFailure(null);
     }
 
     /**
@@ -90,19 +90,19 @@ public class SecurityTest extends UnitTest {
         for (UserRole role : roles) {
             user.getRoles().add(role);
         }
-        
+
         Mockito.when(spySecurityHandler.getRoleHolder()).thenReturn(user);
         return spySecurityHandler;
     }
-    
+
     @Test
     public void testUnrestrictedDoesNotRequireUser() throws java.lang.SecurityException, NoSuchMethodException {
         SecurityHandler securityHandler = Mockito.spy(security.securityHandler);
         security.securityHandler = securityHandler;
-        
+
         security.executeSecurityChecks(RestrictedService.class, "doSimpleChange", new Class<?>[] {});
-        
-        Mockito.verify(securityHandler, Mockito.times(0)).onAccessFailure(Mockito.anyString());
+
+        Mockito.verify(securityHandler, Mockito.times(0)).onAccessFailure(null);
     }
     
     @Test(expected = SecurityException.class)
