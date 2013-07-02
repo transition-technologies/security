@@ -1,12 +1,11 @@
 package security;
 
+import model.User;
+import model.UserRole;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import model.User;
-import model.UserRole;
 import play.test.UnitTest;
 import security.exception.SecurityException;
 import security.handler.AccessHandler;

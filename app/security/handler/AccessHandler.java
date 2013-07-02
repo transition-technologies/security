@@ -16,16 +16,6 @@ import security.role.RoleHolder;
 public interface AccessHandler {
 
     /**
-     * Check access for objects based on object access map, where key is context object and value specifies access checks for
-     * current user.
-     *
-     * @param roleHolder the role holder
-     * @param objectAccessMap the object access map
-     * @return the access result
-     */
-    AccessResult checkAccess(RoleHolder roleHolder, Map<AclManaged, Access> objectAccessMap);
-
-    /**
      * Checks roleHolder has access for context object.
      *
      * @param roleHolder the role holder
@@ -35,4 +25,14 @@ public interface AccessHandler {
      */
     AccessResult checkAccess(RoleHolder roleHolder, AclManaged contextObject, AccessType[] accessTypes);
 
+    /**
+     * Convert context object to target AclManaged to be tested for access.
+     * This method is usable if ypu validate object IDs instead of objects themselves.
+     * Use {@link security.annotation.Access#type()} to set target type.
+     *
+     * @param contextObject Object passed for validation
+     * @param type          Desired type of AclManaged
+     * @return Object to validate access for or null if couldn't retrieve
+     */
+    AclManaged toAclManaged(Object contextObject, Class<? extends AclManaged> type);
 }

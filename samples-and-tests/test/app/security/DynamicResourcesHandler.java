@@ -3,6 +3,7 @@ package security;
 import java.util.List;
 import java.util.Map;
 
+import model.User;
 import security.annotation.Access;
 import security.annotation.Access.AccessType;
 import security.handler.AccessHandler;
@@ -27,25 +28,15 @@ public class DynamicResourcesHandler implements AccessHandler {
 
         return result;
     }
-    
-    public AccessResult checkAccess(RoleHolder roleHolder, Map<AclManaged, Access> objectAccessMap) {
-        AccessResult result = AccessResult.ALLOWED;
 
-        for (AclManaged object : objectAccessMap.keySet()) {
-            Access access = objectAccessMap.get(object);
-
-            AccessType[] accessTypes = access.value();
-
-            result = aclSecurityCheck(roleHolder, accessTypes);
-            if (result == AccessResult.DENIED) {
-                break;
-            }
-
+    public AclManaged toAclManaged(Object contextObject, Class<? extends AclManaged> type) {
+        try {
+            return type.newInstance();
+        } catch (Exception ex) {
+            throw new RuntimeException("Failed to instantiate " + type);
         }
-
-        return result;
     }
-    
+
     private AccessResult aclSecurityCheck(RoleHolder roleHolder, AccessType[] accesses) {
         AccessResult result = AccessResult.DENIED;
         

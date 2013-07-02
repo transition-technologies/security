@@ -271,47 +271,39 @@ public class Security {
      * @param args the args
      */
     private void executeAccessCheck(RoleHolder roleHolder, Method method, Object... args) {
-        Map<AclManaged, Access> accessMap = getObjectAccessMap(Access.class, method, args);
-
-        if (!accessMap.isEmpty()) {
-            AccessResult accessResult = securityHandler.getAccessHandler().checkAccess(roleHolder, accessMap);
-    
-            if (accessResult == AccessResult.DENIED) {
-                securityHandler.onAccessFailure("");
-            }
-        }
-    }
-
-    /**
-     * Returns object access map, where key is the object and value the access rule.
-     * 
-     * @param <T> the generic type
-     * @param annotationClass the annotation class
-     * @param method the method
-     * @param args the parameter object of method
-     * @return the object access map
-     */
-    private <T extends Annotation> Map<AclManaged, T> getObjectAccessMap(Class<T> annotationClass, Method method, Object... args) {
-        Map<AclManaged, T> accessMap = new HashMap<AclManaged, T>();
-
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-
         for (int i = 0; i < parameterAnnotations.length; i++) {
-            if (args[i] instanceof AclManaged) {
+            Object contextObject = args[i];
+
+            if (contextObject != null) {
                 for (int j = 0; j < parameterAnnotations[i].length; j++) {
-                    if (annotationClass.isInstance(parameterAnnotations[i][j])) {
-                        accessMap.put((AclManaged) args[i], annotationClass.cast(parameterAnnotations[i][j]));
+                    Annotation annotation = parameterAnnotations[i][j];
+                    if (annotation instanceof Access) {
+                        Access access = (Access) annotation;
+                        contextObject = toAclManaged(contextObject, access.type());
+                        AccessResult accessResult = securityHandler.getAccessHandler().checkAccess(roleHolder,
+                                (AclManaged) contextObject, access.value());
+
+                        if (accessResult == AccessResult.DENIED) {
+                            securityHandler.onAccessFailure("");
+                        }
                     }
                 }
             }
         }
+    }
 
-        return accessMap;
+    private AclManaged toAclManaged(Object contextObject, Class<? extends AclManaged> type) {
+        if (!(contextObject instanceof AclManaged)) {
+            contextObject = securityHandler.getAccessHandler().toAclManaged(contextObject, type);
+        }
+
+        return (AclManaged) contextObject;
     }
 
     /**
      * Checks whether list of roles contains role with given requiredRoleName.
-     * 
+     *
      * @param roles the roles
      * @param requiredRoleName the required role name
      * @return true, if successful
@@ -331,7 +323,7 @@ public class Security {
 
     /**
      * Checks if there is logged user ({@link RoleHolder}) if method or class is annotated with {@link AnyRole}
-     * 
+     *
      * @param method the method
      */
     private void executeAnyRoleCheck(RoleHolder roleHolder, Method method) {
@@ -344,7 +336,7 @@ public class Security {
 
     /**
      * Checks if the method is annotated with {@link Unsecured}.
-     * 
+     *
      * @param method the method
      * @return true, if is unsecured
      */
@@ -356,7 +348,7 @@ public class Security {
 
     /**
      * Gets the annotation from method or class if the annotation is not present on method.
-     * 
+     *
      * @param <T> the generic type
      * @param method the method
      * @param annotationClass the annotation class
